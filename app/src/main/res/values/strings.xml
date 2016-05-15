@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">QuanLyXeKhach</string>
+    <string name="app_name">Quản Lý Xe Khách</string>
+    <string name="header">Title của Activity</string>
+    <string name="format_date_send_server" >yyyy/MM/dd</string>
+    <string name="notif_an_other_user_login_to_this_account">Có người khác đã đăng nhập vào tài khoản này</string>
+    <string name="notif_need_re_login">Mời bạn đăng nhập lại</string>
+    <string name="notif_no_network">Không có kết nối mạng. Vui lòng bật 3G hoặc Wifi</string>
+    <string name="notif_server_not_found">404 Not Found</string>
 </resources>
