@@ -6,4 +6,10 @@
     <string name="notif_need_re_login">Mời bạn đăng nhập lại</string>
     <string name="notif_no_network">Không có kết nối mạng. Vui lòng bật 3G hoặc Wifi</string>
     <string name="notif_server_not_found">404 Not Found</string>
+    <string name="your_locate">Vị trí của bạn</string>
+    <string name="notif_wait_for_your_location">Chưa lấy được vị trí của bạn, hãy thử lại</string>
+    <string name="google_map_activity">Google Map</string>
+    <string name="message_app_need_location_access">Bạn cần bật chức năng theo dõi vị trí</string>
+    <string name="lbl_yes">Bật vị trí</string>
+    <string name="cam_pha_car_station">Bến xe Cẩm Phả</string>
 </resources>
