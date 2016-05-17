@@ -13,4 +13,7 @@ https://techmaster.vn/posts/33658/su-dung-git-hieu-qua  <br/>
 #Coding convention khi code, đọc kỹ để đặt tên biến và hàm chuẩn khi code: 
 https://github.com/Nadia-VN/coding-standards/blob/master/android-team/android-coding-conventions.md
 
-
+#Chú ý:
+- Không được push code lên branh master.
+- Phải Code theo coding convention và push code lên origin develop ít nhất 1 lần/ngày nếu có code mới
+- ...
