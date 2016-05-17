@@ -74,6 +74,11 @@ public class GoogleMapActivity extends BaseActivity {
         mSupportLocationMapFragment.stopLocationUpdates();
     }
 
+    @OnClick(R.id.btnLocation)
+    public void onClick() {
+        mSupportLocationMapFragment.goToLocation();
+    }
+
     /**
      * Check GPS of devide. If GPS off show a Confirm Dialog
      *
@@ -98,9 +103,9 @@ public class GoogleMapActivity extends BaseActivity {
         return isProviderEnabled;
     }
 
-    @OnClick(R.id.btnLocation)
-    public void onClick() {
-        mSupportLocationMapFragment.goToLocation();
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, GoogleMapActivity.class);
+        context.startActivity(intent);
     }
 
     @Bind(R.id.btnLocation)

@@ -12,4 +12,6 @@
     <string name="message_app_need_location_access">Bạn cần bật chức năng theo dõi vị trí</string>
     <string name="lbl_yes">Bật vị trí</string>
     <string name="cam_pha_car_station">Bến xe Cẩm Phả</string>
+    <string name="drawer_open">Slider menu opened</string>
+    <string name="drawer_close">Slider menu closed</string>
 </resources>

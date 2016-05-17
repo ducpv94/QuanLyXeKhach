@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="nav_drawer_titles">
+        <item >Xem tuyến đường</item>
+        <item>Thống kê</item>
+        <item>Đăng xuất</item>
+    </string-array>
+</resources>
