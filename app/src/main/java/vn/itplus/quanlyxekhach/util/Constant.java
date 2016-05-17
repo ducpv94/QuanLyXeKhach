@@ -10,6 +10,6 @@ public class Constant {
     public static final String TODAY_DATE = "TodayDate";
 
     public static final float MIN_SPEED = 0.5f;
-    public static final float TEST_CONSTANT = 111111111f;
+    public static final float TEST_CONSTANT = 50f;
 
 }
