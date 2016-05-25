@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.ImageView;
+import android.util.Log;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
-import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.itplus.quanlyxekhach.R;
 import vn.itplus.quanlyxekhach.view.MySupportLocationMapFragment;
@@ -23,6 +23,7 @@ public class GoogleMapActivity extends BaseActivity {
 
     private MySupportLocationMapFragment mSupportLocationMapFragment;
     private AlertDialog dialog;
+    private String TAG = "GoogleMap";
 
     @Override
     protected int layoutID() {
@@ -31,6 +32,9 @@ public class GoogleMapActivity extends BaseActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ButterKnife.bind(this);
+        initHeader(getString(R.string.view_route));
+
         SupportMapFragment supportMapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -76,6 +80,7 @@ public class GoogleMapActivity extends BaseActivity {
 
     @OnClick(R.id.btnLocation)
     public void onClick() {
+        Log.e(TAG, ": View current clicked");
         mSupportLocationMapFragment.goToLocation();
     }
 
@@ -107,7 +112,4 @@ public class GoogleMapActivity extends BaseActivity {
         Intent intent = new Intent(context, GoogleMapActivity.class);
         context.startActivity(intent);
     }
-
-    @Bind(R.id.btnLocation)
-    ImageView btnLocation;
 }

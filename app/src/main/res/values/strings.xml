@@ -14,4 +14,5 @@
     <string name="cam_pha_car_station">Bến xe Cẩm Phả</string>
     <string name="drawer_open">Slider menu opened</string>
     <string name="drawer_close">Slider menu closed</string>
+    <string name="view_route">Xem tuyến đường</string>
 </resources>

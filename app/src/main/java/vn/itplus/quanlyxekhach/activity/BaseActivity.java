@@ -48,22 +48,23 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return layout ID of Activity. Example: R.layout.main_activity
      */
     protected abstract int layoutID();
 
     /**
      * Initialize views for activity. Example; findViewByID, ButterKnife.bind
+     *
      * @param savedInstanceState
      */
     protected abstract void initViews(Bundle savedInstanceState);
 
     /**
      * Initialize variables for activity
+     *
      * @param savedInstanceState
      */
-    protected abstract void  initVariables(Bundle savedInstanceState);
+    protected abstract void initVariables(Bundle savedInstanceState);
 
     /**
      * Initialize Header for activity
@@ -98,6 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * Handle Error when connect to server and show a notification for user
+     *
      * @param errorCode
      * @param errorMessage
      * @param showToast
@@ -107,7 +109,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (errorCode == HttpStatus.SC_UNAUTHORIZED) {
             logout();
-           // LoginActivity.startActivity(this);
+            // LoginActivity.startActivity(this);
             if (showToast) {
                 showLongToast(R.string.notif_an_other_user_login_to_this_account);
             }
@@ -119,13 +121,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 showLongToast(R.string.notif_need_re_login);
             }
 
-           // LoginActivity.startActivity(this);
+            // LoginActivity.startActivity(this);
             this.finish();
-            return;
-        } else if (errorCode == HttpStatus.SC_NOT_FOUND) {
-            if (showToast) {
-                showLongToast(R.string.notif_server_not_found);
-            }
             return;
         } else if (errorCode == HttpStatus.SC_NOT_FOUND) {
             if (showToast) {
@@ -150,25 +147,34 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showLongToast(int stringResourceID) {
-        if (toast == null) {
-            toast = Toast.makeText(this, getString(stringResourceID), Toast.LENGTH_LONG);
-            toast.show();
+        if (toast != null) {
+            toast.cancel();
         }
+        toast = Toast.makeText(this, getString(stringResourceID), Toast.LENGTH_LONG);
+        toast.show();
     }
 
     public void showLongToast(String message) {
-
-        if (toast == null) {
-            toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-            toast.show();
+        if (toast != null) {
+            toast.cancel();
         }
+        toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        toast.show();
     }
 
     public void showShortToast(int stringResourceID) {
-
-        if (toast == null) {
-            toast = Toast.makeText(this, getString(stringResourceID), Toast.LENGTH_SHORT);
-            toast.show();
+        if (toast != null) {
+            toast.cancel();
         }
+        toast = Toast.makeText(this, getString(stringResourceID), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void showShortToast(String message) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

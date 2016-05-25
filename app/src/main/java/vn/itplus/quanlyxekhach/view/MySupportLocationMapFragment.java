@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Map;
 import vn.itplus.quanlyxekhach.R;
 import vn.itplus.quanlyxekhach.activity.BaseActivity;
 import vn.itplus.quanlyxekhach.asynctask.GetDirectionAsyncTask;
+import vn.itplus.quanlyxekhach.util.ConnectionDetector;
 import vn.itplus.quanlyxekhach.util.Constant;
 import vn.itplus.quanlyxekhach.util.GMapV2Direction;
 
@@ -42,7 +44,7 @@ import vn.itplus.quanlyxekhach.util.GMapV2Direction;
 public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = "MySupportLocationMapFragment";
-    public static final LatLng CAM_PHA_CAR_STATION = new LatLng(21.0057695, 107.2883979);
+
 
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
@@ -51,8 +53,8 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
     private Location mLocation;
 
     private Marker mMarker;
+    private Polyline newPolyline;
     private volatile boolean needViewAll = true;
-    private boolean hasPolyLine = false;
 
     public MySupportLocationMapFragment(FragmentActivity mActivity, SupportMapFragment supportMapFragment) {
         this.mActivity = mActivity;
@@ -83,8 +85,12 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
         }
         //set Map TYPE
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        //enable Current location Button
-        googleMap.setMyLocationEnabled(false);
+        //enable zoom Button
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+        ConnectionDetector connectionDetector = new ConnectionDetector(mActivity);
+        if (connectionDetector.isConnectingToInternet())
+            drawDefaultRoute();
     }
 
     @SuppressLint("LongLogTag")
@@ -101,23 +107,28 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
 
     @Override
     public void onLocationChanged(Location location) {
-        mLocation = location;
-        addMyMarkerToMap(location);
-        zoomToLocation(location);
-        LatLng toLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-        if (!hasPolyLine)
-            findDirectionAndDrawPolyLine(toLocation, CAM_PHA_CAR_STATION, GMapV2Direction.MODE_DRIVING);
-        else if (location.getSpeed() >= Constant.MIN_SPEED)
-            findDirectionAndDrawPolyLine(toLocation, CAM_PHA_CAR_STATION, GMapV2Direction.MODE_DRIVING);
-
-        addMarkerToMap(CAM_PHA_CAR_STATION, R.drawable.ic_store_marker_not,
+        addMarkerToMap(Constant.MY_DINH_CAR_STATION, R.drawable.ic_store_marker_not,
                 mActivity.getString(R.string.cam_pha_car_station));
+        addMarkerToMap(Constant.CAM_PHA_CAR_STATION, R.drawable.ic_store_marker_not,
+                mActivity.getString(R.string.cam_pha_car_station));
+
+        /*If distance Change > 30m re Marker*/
+        if (mLocation == null) {
+            mLocation = location;
+            addMyMarkerToMap(location);
+        } else {
+            float distance = location.distanceTo(mLocation);
+            if (distance > Constant.DISTANCE_CHANGE) {
+                addMyMarkerToMap(location);
+                mLocation = location;
+            }
+        }
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.e(TAG, " :onConnectionFailed");
     }
 
     /**
@@ -153,7 +164,9 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
     }
 
     public void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
     }
 
     public void stopLocationUpdates() {
@@ -237,21 +250,21 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        if (mMarker != null) {
+        if (mMarker != null)
             builder.include(mMarker.getPosition());
-        }
-        if (googleMap == null) {
+
+        if (googleMap == null)
             needViewAll = true;
-        }
+
         try {
 //        int padding = 200; // offset from edges of the map in pixels
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), (int) mActivity.getResources().getDimension(R.dimen.map_padding)));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+                    (int) mActivity.getResources().getDimension(R.dimen.map_padding)));
             needViewAll = false;
         } catch (Exception ex) {
             Log.e(TAG, "Map size can't be 0. Most likely, layout has not yet occured for the map view.  " +
                     "Either wait until layout has occurred or use newLatLngBounds(LatLngBounds, int, int, int) " +
                     "which allows you to specify the map's dimensions.");
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
             googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
@@ -261,17 +274,19 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
         }
     }
 
-    private void findDirectionAndDrawPolyLine(LatLng fromPostion, LatLng toPostion, String mode) {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(GetDirectionAsyncTask.USER_CURRENT_LAT,
-                String.valueOf(fromPostion.latitude));
-        map.put(GetDirectionAsyncTask.USER_CURRENT_LONG,
-                String.valueOf(fromPostion.longitude));
+    private void drawDefaultRoute() {
+        LatLng toLocation = new LatLng(21.203958, 105.7799288);
+        findDirection(Constant.MY_DINH_CAR_STATION, toLocation, GMapV2Direction.MODE_DRIVING);
+    }
 
-        map.put(GetDirectionAsyncTask.DESTINATION_LAT,
-                String.valueOf(toPostion.latitude));
-        map.put(GetDirectionAsyncTask.DESTINATION_LONG,
-                String.valueOf(toPostion.longitude));
+
+    private void findDirection(LatLng fromPostion, LatLng toPostion, String mode) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(GetDirectionAsyncTask.USER_CURRENT_LAT, String.valueOf(fromPostion.latitude));
+        map.put(GetDirectionAsyncTask.USER_CURRENT_LONG, String.valueOf(fromPostion.longitude));
+
+        map.put(GetDirectionAsyncTask.DESTINATION_LAT, String.valueOf(toPostion.latitude));
+        map.put(GetDirectionAsyncTask.DESTINATION_LONG, String.valueOf(toPostion.longitude));
 
         map.put(GetDirectionAsyncTask.DIRECTIONS_MODE, mode);
 
@@ -281,15 +296,24 @@ public class MySupportLocationMapFragment implements OnMapReadyCallback, GoogleA
             protected void onPostExecute(ArrayList directionPoints) {
                 Log.e("MyGoogleMapActivity", "deriection size ="
                         + directionPoints.size());
-                PolylineOptions polylineOptions = new PolylineOptions()
-                        .width(7).color(Color.RED);
-                for (int i = 0; i < directionPoints.size(); i++) {
-                    polylineOptions.add((LatLng) directionPoints.get(i));
-                }
-                googleMap.addPolyline(polylineOptions);
-                hasPolyLine = true;
+
+                drawPolyLine(directionPoints);
+
             }
         };
         getDirectionAsyncTask.execute(map);
+    }
+
+    private void drawPolyLine(ArrayList directionPoints) {
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(7).color(Color.BLUE);
+        for (int i = 0; i < directionPoints.size(); i++) {
+            polylineOptions.add((LatLng) directionPoints.get(i));
+        }
+//        if (newPolyline != null)
+//            newPolyline.remove();
+
+        newPolyline = googleMap.addPolyline(polylineOptions);
+
     }
 }

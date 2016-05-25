@@ -29,4 +29,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'org.apache.httpcomponents:httpcore:4.4-beta1'
+    compile 'com.felipecsl.asymmetricgridview:library:2.0.1'
 }

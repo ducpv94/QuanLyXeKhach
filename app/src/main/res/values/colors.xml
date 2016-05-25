@@ -4,5 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="normal_gray">#cecece</color>
+    <color name="light_gray">#ddd</color>
+    <color name="dark_gray">#aaa</color>
     <color name="avatar_border_blue">#115295</color>
+    <color name="red">#FF0000</color>
+    <color name="divider">#FFCC00</color>
+    <color name="white">#ffffffff</color>
+    <color name="green_emerald">#2ecc71</color>
 </resources>

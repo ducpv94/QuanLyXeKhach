@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg_seat_unpaid"
+    android:layout_height="60dp">
+    <TextView
+        android:id="@+id/txt_seat"
+        style="@style/text_seat_number"
+        android:text="6"/>
+</LinearLayout>

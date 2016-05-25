@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/rl_nav_background"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/nav_drawer_row_height"
     android:background="@drawable/bg_color_item_listview"
     android:clickable="true"
     android:focusable="true"
