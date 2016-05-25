@@ -1,7 +1,9 @@
-package vn.itplus.appuser;
+package vn.itplus.appuser.appuser.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import vn.itplus.appuser.R;
 
 public class MainActivity extends AppCompatActivity {
 
